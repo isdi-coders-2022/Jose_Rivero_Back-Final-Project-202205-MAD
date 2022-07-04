@@ -1,1 +1,8 @@
-# Jose_Rivero_Back-Final-Project-202205-MAD
+## Proyecto Final Jose Rivero
+
+Ecommerce de Tumbao Caribeño, pagina web de compra, mobile.
+Back End realizado con nest.
+
+## License
+
+Nest is [MIT licensed](LICENSE).
