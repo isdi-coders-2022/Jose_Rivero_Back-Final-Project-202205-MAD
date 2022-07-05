@@ -23,13 +23,13 @@ export class ProductsService {
         return this.Product.findById(id);
     }
 
-    update(id: string, updateProductDto: UpdateProductDto) {
+    async update(id: string, updateProductDto: UpdateProductDto) {
         return this.Product.findByIdAndUpdate(id, updateProductDto, {
             new: true,
         });
     }
 
-    remove(id: string) {
+    async remove(id: string) {
         return this.Product.findByIdAndDelete(id);
     }
 }

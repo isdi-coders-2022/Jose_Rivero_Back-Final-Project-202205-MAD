@@ -9,6 +9,7 @@ export interface iProduct {
     onSale: boolean;
     category: categories;
     stock: number;
+    color: string;
     size: string;
     image: string;
 }

@@ -5,8 +5,6 @@ const isEmail = (email: string) => {
     return regex.test(email);
 };
 
-type shopProduct = { product: Types.ObjectId; quantity: number };
-
 export interface iUser {
     id?: Types.ObjectId;
     name: string;
@@ -14,7 +12,7 @@ export interface iUser {
     password: string;
     address: string;
     payMethod: string;
-    shopCart?: Array<shopProduct>;
+    shopCart?: Types.ObjectId;
     wishList?: Types.ObjectId[];
 }
 export const userSchema = new Schema({
@@ -28,11 +26,6 @@ export const userSchema = new Schema({
     password: { type: String, minlength: 5 },
     address: { type: String, minlength: 5 },
     payMethod: { type: String, minlength: 5 },
-    shopCart: [
-        {
-            product: { type: SchemaTypes.ObjectId, ref: 'Product' },
-            quantity: Number,
-        },
-    ],
+    shopCart: { type: SchemaTypes.ObjectId, ref: 'Shop' },
     wishList: [{ type: SchemaTypes.ObjectId, ref: 'Product' }],
 });
