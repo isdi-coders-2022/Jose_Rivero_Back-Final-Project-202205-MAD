@@ -6,8 +6,10 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtPayload } from 'jsonwebtoken';
 import { Model } from 'mongoose';
-import { AuthService } from 'src/auth/auth.service';
-import { BcryptService } from 'src/auth/bcrypt.service';
+import { AuthService } from '../auth/auth.service';
+import { BcryptService } from '../auth/bcrypt.service';
+import { CreateShopCartDto } from '../shop-cart/dto/create-shop-cart.dto';
+import { iShop } from '../shop-cart/entities/shop-cart.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { iUser } from './entities/user.entity';
@@ -16,6 +18,7 @@ import { iUser } from './entities/user.entity';
 export class UsersService {
     constructor(
         @InjectModel('User') private readonly User: Model<iUser>,
+        @InjectModel('Shop') private readonly Shop: Model<iShop>,
         private readonly auth: AuthService,
         private readonly bcrypt: BcryptService
     ) {}
@@ -25,6 +28,9 @@ export class UsersService {
             ...createUserDto,
             password: this.bcrypt.encrypt(createUserDto.password),
         });
+        const newShop = await this.Shop.create({ owner: newUser._id });
+        newUser.shopCart = newShop.id;
+        newUser.save();
         const token = this.auth.createToken(newUser.id);
         return {
             user: newUser,
@@ -34,7 +40,7 @@ export class UsersService {
     async login(loginData: { email: string; password: string }) {
         const user = await this.User.findOne({
             email: loginData.email,
-        }).populate('tasks');
+        });
         if (
             user === null ||
             !this.bcrypt.compare(loginData.password, user.password)
@@ -52,11 +58,10 @@ export class UsersService {
             const tokenData = this.auth.validateToken(
                 token.substring(7)
             ) as JwtPayload;
+            console.log(tokenData);
             if (typeof tokenData === 'string')
                 throw new UnauthorizedException();
-            const user = await this.User.findById(tokenData.id).populate(
-                'tasks'
-            );
+            const user = await this.User.findById(tokenData.id);
             if (user === null)
                 throw new NotFoundException('User does not exist.');
             const newToken = this.auth.createToken(user.id);
@@ -69,19 +74,19 @@ export class UsersService {
         }
     }
 
-    findAll() {
-        return this.User.find({});
+    async findAll() {
+        return this.User.find().populate('shopCart');
     }
 
-    findOne(id: number) {
-        return this.User.findById(id);
+    async findOne(id: string) {
+        return (await this.User.findById(id)).populated('shopCart');
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
+    async update(id: string, updateUserDto: UpdateUserDto) {
         return this.User.findByIdAndUpdate(id, updateUserDto, { new: true });
     }
 
-    remove(id: number) {
+    async remove(id: string) {
         return this.User.findByIdAndDelete(id);
     }
 }

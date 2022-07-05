@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import { hashSync, compareSync } from 'bcryptjs';
 
 @Injectable()
 export class BcryptService {
     encrypt(password: string) {
-        return bcrypt.hashSync(password);
+        return hashSync(password);
     }
 
     compare(password: string, hash: string) {
-        return bcrypt.compareSync(password, hash);
+        return compareSync(password, hash);
     }
 }
