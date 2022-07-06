@@ -15,7 +15,15 @@ import { ShopCartModule } from './shop-cart/shop-cart.module';
         UsersModule,
         ProductsModule,
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.URL_MONGO),
+        MongooseModule.forRoot(
+            `mongodb+srv://${process.env.MONGO_USER}:${
+                process.env.PASSWORD
+            }@pruebajose.d3jjx.mongodb.net/${
+                process.env.NODE_ENV === 'test'
+                    ? process.env.TEST_DBNAME
+                    : process.env.DBNAME
+            }?retryWrites=true&w=majority`
+        ),
         ShopCartModule,
     ],
     controllers: [AppController],

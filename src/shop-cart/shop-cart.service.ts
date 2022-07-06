@@ -28,7 +28,7 @@ export class ShopCartService {
     }
 
     async update(id: string, updateProductDto: UpdateShopCartDto) {
-        return this.Shop.findByIdAndUpdate(id, updateProductDto, {
+        return await this.Shop.findByIdAndUpdate(id, updateProductDto, {
             new: true,
         }).populate('owner', 'name');
     }

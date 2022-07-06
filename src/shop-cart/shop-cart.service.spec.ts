@@ -11,9 +11,9 @@ describe('ShopCartService', () => {
         products: ['Mantatermica', 20],
         owner: 'Jesus',
         save: jest.fn(),
-        populate: jest.fn(),
     };
     const mockShopModel = {
+        populate: jest.fn().mockResolvedValue(mockReturnValue),
         create: jest.fn().mockResolvedValue(mockShop),
         findOne: jest.fn().mockResolvedValue(mockShop),
         findById: jest.fn().mockResolvedValue(mockShop),
@@ -79,10 +79,12 @@ describe('ShopCartService', () => {
     describe('When calling service.UpdateAdd', () => {
         test('Then it should return the update cart', async () => {
             mockShopModel.findById.mockReturnValueOnce({
+                products: mockShop.products,
                 populate: jest.fn().mockResolvedValue(mockReturnValue),
+                save: jest.fn(),
             });
 
-            const result = await service.update('test', {
+            const result = await service.updateAdd('test', {
                 product: 'manta',
                 quantity: 30,
             });
@@ -91,12 +93,14 @@ describe('ShopCartService', () => {
         });
     });
     describe('When calling service.UpdateRemove', () => {
-        test('Then it should return the update cart', async () => {
+        test('Then it should return the updateUpdateRemove cart', async () => {
             mockShopModel.findById.mockReturnValueOnce({
+                products: mockShop.products,
                 populate: jest.fn().mockResolvedValue(mockReturnValue),
+                save: jest.fn(),
             });
 
-            const result = await service.update('test', {
+            const result = await service.updateRemove('test', {
                 product: 'manta',
                 quantity: 30,
             });
