@@ -8,7 +8,6 @@ import { JwtPayload } from 'jsonwebtoken';
 import { Model } from 'mongoose';
 import { AuthService } from '../auth/auth.service';
 import { BcryptService } from '../auth/bcrypt.service';
-import { CreateShopCartDto } from '../shop-cart/dto/create-shop-cart.dto';
 import { iShop } from '../shop-cart/entities/shop-cart.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -79,7 +78,7 @@ export class UsersService {
     }
 
     async findOne(id: string) {
-        return (await this.User.findById(id)).populated('shopCart');
+        return this.User.findById(id).populate('shopCart');
     }
 
     async update(id: string, updateUserDto: UpdateUserDto) {

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
@@ -14,7 +15,6 @@ import { ShopCartController } from 'src/shop-cart/shop-cart.controller';
     imports: [
         MongooseModule.forFeature([
             { name: 'User', schema: userSchema },
-            { name: 'Product', schema: productSchema },
             { name: 'Shop', schema: shopSchema },
         ]),
     ],

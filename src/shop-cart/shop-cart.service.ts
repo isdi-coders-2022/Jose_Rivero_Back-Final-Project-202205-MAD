@@ -10,8 +10,8 @@ import { iShop } from './entities/shop-cart.entity';
 export class ShopCartService {
     constructor(@InjectModel('Shop') private readonly Shop: Model<iShop>) {}
 
-    create(createShopCartDto: CreateProductDto) {
-        return;
+    async create(createShopCartDto: CreateProductDto) {
+        return await this.Shop.create(createShopCartDto);
     }
 
     async findOne(id: string) {
