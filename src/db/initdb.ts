@@ -1,7 +1,7 @@
 import { app } from '../app.js';
-import { iShop} from '../users/entities/shop-cart.entity';
-import { iProduct} from '../users/entities/product.entity';
-import { iUser} from '../users/entities/user.entity';
+import { iShop } from '../users/entities/shop-cart.entity';
+import { iProduct } from '../users/entities/product.entity';
+import { iUser } from '../users/entities/user.entity';
 import { BcryptService } from '../auth/bcrypt.service';
 import { mongooseConnect } from './mongoose.js';
 
@@ -12,8 +12,6 @@ let aUsers: Array<iUser> = [
         password: 'password',
         address: 'En su casa',
         payMethod: 'paypal',
-      
-        
     },
     {
         name: 'Fernando',
@@ -21,13 +19,11 @@ let aUsers: Array<iUser> = [
         password: 'confidencial',
         address: 'confidencial',
         payMethod: 'confidencial',
-      
-    }
+    },
 ];
 
 const aTasks: Array<iProduct> = [
-     {
-     
+    {
         name: 'MANTA TEST',
         price: 10,
         onSale: false,
@@ -38,7 +34,6 @@ const aTasks: Array<iProduct> = [
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
     },
     {
-        
         name: 'LAPTO TEST',
         price: 10,
         onSale: false,
@@ -48,8 +43,7 @@ const aTasks: Array<iProduct> = [
         size: 'L',
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
     },
-     {
-       
+    {
         name: 'CEPILLO TEST',
         price: 10,
         onSale: false,
@@ -58,24 +52,37 @@ const aTasks: Array<iProduct> = [
         color: 'black',
         size: 'L',
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
-    }
+    },
 ];
 
-(async () => {
-    const connect = await mongooseConnect();
-    aUsers = Promise.all(aUsers.map((item) => ({
-        ...item,
-        passwd: BcryptService.prototype.encrypt(item.password, 10),
-    }));)
+export const initDB = async () => {
+    aUsers = await Promise.all(
+        aUsers.map(async (item) => ({
+            ...item,
+            password: await BcryptService.prototype.encrypt(item.password),
+        }))
+    );
+    const users = await insertMany(aUsers);
+    aTasks[0].responsible = users[0].id;
+    aTasks[1].responsible = users[1].id;
+    const tasks = await Task.insertMany(aTasks);
 
-  
-    console.log(aUsers);
-    const Users = User.insertMany(aUsers);
-    console.log(User);
-    const user1 = User.findOne({ name: 'Pepe' });
+    const finalUsers = [];
+    for (let i = 0; i < users.length; i++) {
+        const item = users[i];
+        finalUsers[i] = await User.findByIdAndUpdate(
+            item.id,
+            {
+                $set: { tasks: [tasks[i].id] },
+            },
+            // { ...item, tasks: [tasks[i].id] },
+            { new: true }
+        );
+    }
 
-    const user2 = User.findOne({ name: 'Pepito' });
-
-    console.log(Task);
-})();
-console.log('hola');
+    connect.disconnect();
+    return {
+        tasks,
+        users: finalUsers,
+    };
+};

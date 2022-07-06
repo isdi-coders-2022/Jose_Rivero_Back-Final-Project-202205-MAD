@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Schema, SchemaTypes, Types } from 'mongoose';
 
 type shopProduct = { product: string; quantity: number };
