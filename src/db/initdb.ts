@@ -1,4 +1,4 @@
-import { app } from '../app.js';
+/*  import { app } from '../app.js';
 import { iShop } from '../users/entities/shop-cart.entity';
 import { iProduct } from '../users/entities/product.entity';
 import { iUser } from '../users/entities/user.entity';
@@ -80,9 +80,11 @@ export const initDB = async () => {
         );
     }
 
-    connect.disconnect();
+    
     return {
         tasks,
         users: finalUsers,
     };
 };
+
+ */

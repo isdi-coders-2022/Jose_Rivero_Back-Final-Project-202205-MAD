@@ -3,11 +3,11 @@ import { Module } from '@nestjs/common';
 import { ShopCartService } from './shop-cart.service';
 import { ShopCartController } from './shop-cart.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { userSchema } from 'src/users/entities/user.entity';
-import { productSchema } from 'src/products/entities/product.entity';
+import { userSchema } from '../users/entities/user.entity';
+import { productSchema } from '../products/entities/product.entity';
 import { shopSchema } from './entities/shop-cart.entity';
-import { AuthService } from 'src/auth/auth.service';
-import { BcryptService } from 'src/auth/bcrypt.service';
+import { AuthService } from '../auth/auth.service';
+import { BcryptService } from '../auth/bcrypt.service';
 
 @Module({
     imports: [

@@ -21,7 +21,7 @@ import { ShopCartModule } from './shop-cart/shop-cart.module';
                 process.env.PASSWORD
             }@pruebajose.d3jjx.mongodb.net/${
                 process.env.NODE_ENV === 'test'
-                    ? process.env.TEST_DBNAME
+                    ? process.env.TESTDBNAME
                     : process.env.DBNAME
             }?retryWrites=true&w=majority`
         ),
@@ -37,7 +37,7 @@ export class AppModule {
             .exclude(
                 { path: 'users', method: RequestMethod.POST },
                 { path: 'products', method: RequestMethod.ALL },
-                { path: 'users/login', method: RequestMethod.ALL }
+                { path: 'users/login', method: RequestMethod.POST }
             )
             .forRoutes('*');
     }

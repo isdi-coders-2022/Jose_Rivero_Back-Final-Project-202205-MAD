@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Injectable,
     NotFoundException,
     UnauthorizedException,
@@ -23,18 +24,22 @@ export class UsersService {
     ) {}
 
     async create(createUserDto: CreateUserDto) {
-        const newUser = await this.User.create({
-            ...createUserDto,
-            password: this.bcrypt.encrypt(createUserDto.password),
-        });
-        const newShop = await this.Shop.create({ owner: newUser._id });
-        newUser.shopCart = newShop.id;
-        newUser.save();
-        const token = this.auth.createToken(newUser.id);
-        return {
-            user: newUser,
-            token,
-        };
+        try {
+            const newUser = await this.User.create({
+                ...createUserDto,
+                password: this.bcrypt.encrypt(createUserDto.password),
+            });
+            const newShop = await this.Shop.create({ owner: newUser._id });
+            newUser.shopCart = newShop.id;
+            newUser.save();
+            const token = this.auth.createToken(newUser.id);
+            return {
+                user: newUser,
+                token,
+            };
+        } catch (error) {
+            throw new BadRequestException('Error, required data is missing');
+        }
     }
     async login(loginData: { email: string; password: string }) {
         const user = await this.User.findOne({
@@ -86,6 +91,9 @@ export class UsersService {
     }
 
     async remove(id: string) {
+        const cart = await this.Shop.findOne({ owner: id });
+        if (!cart) throw new NotFoundException('User does not exist.');
+        cart.delete();
         return this.User.findByIdAndDelete(id);
     }
 }
