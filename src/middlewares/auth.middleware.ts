@@ -3,15 +3,24 @@ import {
     NestMiddleware,
     UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
+import { NextFunction, Request, Response } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
+import { AuthService } from '../auth/auth.service';
+
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
     constructor(private readonly auth: AuthService) {}
-    use(req: any, res: any, next: () => void) {
-        const token = req.get('Authorization').substring(7);
-        const tokenData = this.auth.validateToken(token);
-        if (typeof tokenData === 'string')
-            throw new UnauthorizedException('Session expired');
+    use(req: Request, res: Response, next: NextFunction) {
+        const token = req.get('Authorization');
+        if (!token) throw new UnauthorizedException("Token doesn't exist");
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.validateToken(token.substring(7));
+        } catch (e) {
+            throw new UnauthorizedException('Token expired');
+        }
+        if (typeof decodedToken === 'string')
+            throw new UnauthorizedException('Token expired');
         next();
     }
 }

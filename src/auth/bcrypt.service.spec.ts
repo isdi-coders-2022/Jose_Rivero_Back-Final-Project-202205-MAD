@@ -16,7 +16,7 @@ describe('BcryptService', () => {
         });
     });
     describe('When service.compare method is called', () => {
-        test('Then bcryptjs.hashSync should be called', () => {
+        test('Then bcryptjs.compareSync should be called', () => {
             BcryptService.prototype.compare('', '');
             expect(mockCompare).toHaveBeenCalled();
         });

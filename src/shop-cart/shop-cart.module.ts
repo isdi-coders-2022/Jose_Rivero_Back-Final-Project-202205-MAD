@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Module } from '@nestjs/common';
 import { ShopCartService } from './shop-cart.service';
 import { ShopCartController } from './shop-cart.controller';
@@ -20,4 +21,3 @@ import { BcryptService } from 'src/auth/bcrypt.service';
     providers: [ShopCartService, AuthService, BcryptService],
 })
 export class ShopCartModule {}
-
