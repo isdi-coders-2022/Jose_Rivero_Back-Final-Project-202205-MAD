@@ -20,7 +20,7 @@ describe('UsersService', () => {
         wishList: [''],
         save: jest.fn(),
     };
-    const mockShop = { id: '' };
+    const mockShop = { id: '', delete: jest.fn().mockResolvedValue({}) };
 
     const mockUserModel = {
         create: jest.fn().mockResolvedValue(mockUser),
@@ -34,6 +34,7 @@ describe('UsersService', () => {
     };
     const mockShopModel = {
         create: jest.fn().mockResolvedValue(mockShop),
+        findOne: jest.fn().mockResolvedValue(mockShop),
     };
 
     const mockBcrypt = {
@@ -86,6 +87,24 @@ describe('UsersService', () => {
 
     it('should be defined', () => {
         expect(service).toBeDefined();
+    });
+    describe('When calling service.create, and throw Error, required data is missing', () => {
+        test('Then it should return the saved user', async () => {
+            const mockBadUser = {
+                email: 'test@test.test',
+                password: 'password',
+                address: 'test',
+                payMethod: 'paypal',
+                shopCart: '',
+                wishList: [''],
+                save: jest.fn(),
+            };
+            mockUserModel.create.mockResolvedValueOnce(null);
+
+            expect(async () => {
+                await service.create(mockBadUser);
+            }).rejects.toThrow();
+        });
     });
 
     describe('When calling service.create', () => {

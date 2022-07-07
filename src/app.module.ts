@@ -21,7 +21,7 @@ import { ShopCartModule } from './shop-cart/shop-cart.module';
                 process.env.PASSWORD
             }@pruebajose.d3jjx.mongodb.net/${
                 process.env.NODE_ENV === 'test'
-                    ? process.env.TEST_DBNAME
+                    ? process.env.TESTDBNAME
                     : process.env.DBNAME
             }?retryWrites=true&w=majority`
         ),
