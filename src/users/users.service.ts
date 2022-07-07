@@ -92,6 +92,7 @@ export class UsersService {
 
     async remove(id: string) {
         const cart = await this.Shop.findOne({ owner: id });
+        if (!cart) throw new NotFoundException('User does not exist.');
         cart.delete();
         return this.User.findByIdAndDelete(id);
     }

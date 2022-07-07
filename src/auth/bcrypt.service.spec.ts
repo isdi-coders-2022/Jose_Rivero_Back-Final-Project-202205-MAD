@@ -12,9 +12,16 @@ describe('BcryptService', () => {
     describe('When service.encrypt method is called', () => {
         test('Then bcryptjs.hashSync should be called', () => {
             BcryptService.prototype.encrypt('');
+            expect(mockEncrypt).not.toHaveBeenCalled();
+        });
+    });
+    describe('When service.encrypt method is called', () => {
+        test('Then bcryptjs.hashSync should be called', () => {
+            BcryptService.prototype.encrypt('Rodrigo');
             expect(mockEncrypt).toHaveBeenCalled();
         });
     });
+
     describe('When service.compare method is called', () => {
         test('Then bcryptjs.compareSync should be called', () => {
             BcryptService.prototype.compare('', '');

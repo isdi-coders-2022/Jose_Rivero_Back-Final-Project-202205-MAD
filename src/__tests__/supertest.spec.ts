@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
@@ -9,8 +10,10 @@ describe('Given the routes /users & /shopcart & /products', () => {
     let app: INestApplication;
     let userToken: string;
     const badToken = 'hola';
+
     let userId: string;
     let shopCartId: string;
+    let productId: string;
     const mockUser = {
         name: 'Prueba USer',
 
@@ -25,6 +28,16 @@ describe('Given the routes /users & /shopcart & /products', () => {
         password: 'password',
         address: 'test',
         payMethod: 'paypal',
+    };
+    const mockProduct = {
+        name: 'MANTA TERMICA',
+        price: 10,
+        onSale: false,
+        category: 'Accessories',
+        stock: 30,
+        color: 'black',
+        size: 'L',
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
     };
 
     beforeAll(async () => {
@@ -120,6 +133,37 @@ describe('Given the routes /users & /shopcart & /products', () => {
         expect(response.status).toBe(401);
     });
 
+    //products test
+    test('/products (POST)', async () => {
+        const response = await request(app.getHttpServer())
+            .post('/products')
+            .send(mockProduct)
+            .set('Accept', 'application/json');
+        expect(response.status).toBe(201);
+        productId = response.body._id;
+    });
+    test('/products (GET)', async () => {
+        const response = await request(app.getHttpServer())
+            .get(`/products`)
+            .set('Authorization', `bearer ${userToken}`);
+        expect(response.status).toBe(200);
+    });
+    test('/products/:id (GET)', async () => {
+        const response = await request(app.getHttpServer())
+            .get(`/products/${productId}`)
+            .set('Authorization', `bearer ${userToken}`);
+        expect(response.status).toBe(200);
+    });
+    test('/products/:id (PATCH)', async () => {
+        const response = await request(app.getHttpServer())
+            .patch(`/products/${productId}`)
+            .send({ name: 'products UPDATE name' })
+            .set('Authorization', `bearer ${userToken}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.name).toBe('products UPDATE name');
+    });
+
     //shopCart Test
     test('/shopcart (GET)', async () => {
         const response = await request(app.getHttpServer())
@@ -127,6 +171,31 @@ describe('Given the routes /users & /shopcart & /products', () => {
             .set('Authorization', `bearer ${userToken}`);
         expect(response.status).toBe(200);
     });
+    test('/shopcart add/ (PATCH)', async () => {
+        const response = await request(app.getHttpServer())
+            .patch(`/shopcart/add/${shopCartId}`)
+            .send({ product: productId, quantity: 20 })
+            .set('Authorization', `bearer ${userToken}`);
+        expect(response.status).toBe(200);
+        expect(response.body.products[0].product).toBe(productId);
+    });
+    test('/shopcart remove(PATCH)', async () => {
+        const response = await request(app.getHttpServer())
+            .patch(`/shopcart/remove/${shopCartId}`)
+            .send({ product: productId, quantity: 20 })
+            .set('Authorization', `bearer ${userToken}`);
+        expect(response.status).toBe(200);
+    });
+    test('/shopcart (PATCH)', async () => {
+        const response = await request(app.getHttpServer())
+            .patch(`/shopcart/${shopCartId}`)
+            .send({ products: [] })
+            .set('Authorization', `bearer ${userToken}`);
+        expect(response.status).toBe(200);
+        expect(response.body.products).toHaveLength(0);
+    });
+
+    //delete
 
     test('/user/:id (DELETE)', async () => {
         const response = await request(app.getHttpServer())
@@ -136,8 +205,15 @@ describe('Given the routes /users & /shopcart & /products', () => {
     });
     test('/user/:id badRequest (DELETE)', async () => {
         const response = await request(app.getHttpServer())
-            .delete(`/users/${'sadsadasda'}`)
+            .delete(`/users/${'62c4405e3c269d63bb2fc8b9'}`)
             .set('Authorization', `bearer ${userToken}`);
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(404);
+    });
+
+    test('/products/:id (DELETE)', async () => {
+        const response = await request(app.getHttpServer())
+            .delete(`/products/${productId}`)
+            .set('Authorization', `bearer ${userToken}`);
+        expect(response.status).toBe(200);
     });
 });
