@@ -4,6 +4,7 @@ import { hashSync, compareSync } from 'bcryptjs';
 @Injectable()
 export class BcryptService {
     encrypt(password: string) {
+        if (!password) return;
         return hashSync(password);
     }
 

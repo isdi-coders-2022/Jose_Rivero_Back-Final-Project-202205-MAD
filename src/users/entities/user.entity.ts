@@ -20,11 +20,11 @@ export const userSchema = new Schema({
     name: { type: String, required: true },
     email: {
         type: String,
+        unique: true,
         required: true,
         validate: [isEmail, 'Provided email is not valid.'],
-        unique: true,
     },
-    password: { type: String, minlength: 5 },
+    password: { type: String, minlength: 5, required: true },
     address: { type: String, minlength: 5 },
     payMethod: { type: String, minlength: 5 },
     shopCart: { type: SchemaTypes.ObjectId, ref: 'Shop' },
