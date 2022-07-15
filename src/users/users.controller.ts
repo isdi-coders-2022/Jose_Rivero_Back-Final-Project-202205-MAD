@@ -25,7 +25,6 @@ export class UsersController {
         @Body() loginData: { email: string; password: string },
         @Headers('Authorization') token: string
     ) {
-        console.log(token);
         if (token) {
             return await this.usersService.loginWithToken(token);
         }
