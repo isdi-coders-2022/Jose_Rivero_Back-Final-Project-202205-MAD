@@ -62,7 +62,7 @@ export class UsersService {
             const tokenData = this.auth.validateToken(
                 token.substring(7)
             ) as JwtPayload;
-            console.log(tokenData);
+
             if (typeof tokenData === 'string')
                 throw new UnauthorizedException();
             const user = await this.User.findById(tokenData.id);
