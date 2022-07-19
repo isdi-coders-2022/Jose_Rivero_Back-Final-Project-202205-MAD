@@ -1,12 +1,11 @@
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { productSchema } from '../products/entities/product.entity';
+
 import { shopSchema } from '../shop-cart/entities/shop-cart.entity';
 import { AuthService } from '../auth/auth.service';
 import { BcryptService } from '../auth/bcrypt.service';
 import { userSchema } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { find } from 'rxjs';
 
 describe('UsersService', () => {
     const mockReturnValue = 'rodrigo';
