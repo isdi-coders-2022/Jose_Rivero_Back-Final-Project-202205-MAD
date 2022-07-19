@@ -83,7 +83,7 @@ export class UsersService {
     }
 
     async findOne(id: string) {
-        return this.User.findById(id).populate('shopCart');
+        return await this.User.findById(id).populate('wishList');
     }
 
     async update(id: string, updateUserDto: UpdateUserDto) {

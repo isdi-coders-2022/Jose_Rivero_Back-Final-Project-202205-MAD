@@ -31,7 +31,7 @@ import { ShopCartModule } from './shop-cart/shop-cart.module';
     providers: [AppService, AuthService, BcryptService],
 })
 export class AppModule {
-    /*  configure(consumer: MiddlewareConsumer) {
+    configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(AuthMiddleware)
             .exclude(
@@ -40,5 +40,5 @@ export class AppModule {
                 { path: 'users/login', method: RequestMethod.POST }
             )
             .forRoutes('*');
-    } */
+    }
 }
