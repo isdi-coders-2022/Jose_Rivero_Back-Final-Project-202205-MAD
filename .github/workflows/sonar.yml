@@ -15,7 +15,7 @@ jobs:
       - name: Install modules
         run: npm ci
       - name: Testing coverage
-        run: npm run test-coverage
+        run: npm run test
         env:
           SECRET: ${{ secrets.SECRET }}
       - name: SonarCloud Scan
