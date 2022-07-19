@@ -7,6 +7,7 @@ const isEmail = (email: string) => {
 };
 
 export interface iUser {
+    _id?: Types.ObjectId;
     id?: Types.ObjectId;
     name: string;
     email: string;
