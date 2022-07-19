@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Schema, SchemaTypes, Types } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 type categories = 'Tshirt' | 'Accessories';
 
