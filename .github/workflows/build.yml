@@ -6,15 +6,28 @@ on:
     pull_request:
         types: [opened, synchronize, reopened]
 jobs:
-    sonarcloud:
+    SonarCloud:
         name: SonarCloud
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+            - name: Install modules
+              run: npm ci
+            - name: Testing coverage
+              run: npm run test #Change for a valid npm script
+              env:
+                  SECRET: ${{ secrets.SECRET }}
             - name: SonarCloud Scan
               uses: SonarSource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
+              with:
+                  # Additional arguments for the sonarcloud scanner
+                  args:
+                      # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
+                      # mandatory
+                      -Dsonar.projectKey=isdi-coders-2022_Jose_Rivero_Back-Final-Project-202205-MAD
+                      -Dsonar.organization=isdi-coders-2022
